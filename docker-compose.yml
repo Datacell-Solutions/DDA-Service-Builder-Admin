@@ -1,0 +1,10 @@
+services:
+  dda_dsc_admin:
+    build: .
+    ports:
+      - "6663:3333"
+    volumes:
+      - .:/app
+    environment:
+      - NODE_ENV=development
+    command: npm run dev

@@ -1,0 +1,156 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", serif;
+}
+
+body * {
+  box-sizing: border-box;
+  font-family: "Poppins", serif;
+}
+
+.text.red {
+  color: #fa8282;
+}
+
+.main-login {
+  width: 100vw;
+  height: 100vh;
+  background: #201b2c;
+  background-image: url("/images/background.jpg");
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.left-login {
+  width: 50vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.left-login > h1 {
+  color: #77ffc0;
+}
+
+.left-login-img {
+  width: 35vw;
+}
+
+.right-login {
+  width: 50vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-login {
+  width: 60%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 30px 35px;
+  background: rgba(0,0,0,0.8);
+  border-radius: 20px;
+  box-shadow: 0px 10px 40px #00000056;
+}
+
+.card-login > h1 {
+  color: #01abe0;
+  font-weight: 800;
+  margin: 0;
+}
+
+.textfield {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+.textfield > input {
+  width: 100%;
+  border: none;
+  border-radius: 10px;
+  padding: 15px;
+  background: #dde8ec;
+  color: #1c2654;
+  font-size: 12px;
+  box-shadow: 0px 10px 40px #00000056;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.textfield > input::placeholder {
+  color: #8c91aa;
+}
+
+.textfield > label {
+  color: #f0ffffde;
+  margin-bottom: 10px;
+}
+
+.btn-login {
+  width: 100%;
+  padding: 16px 0;
+  margin: 25px;
+  border: none;
+  text-transform: uppercase;
+  border-radius: 8px;
+  outline: none;
+  font-weight: 800;
+  color: #ffffff;
+  background: #028bb4;
+  cursor: pointer;
+  box-shadow: 0px 10px 40px -12px rgba(256, 256, 256, 0.2);
+}
+
+@media only screen and (max-width: 950px) {
+  .card-login {
+    width: 85%;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .main-login {
+    flex-direction: column;
+  }
+  .left-login {
+    width: 100%;
+    height: auto;
+  }
+  .left-login > h1 {
+    display: none;
+  }
+
+  .right-login {
+    width: 100%;
+    height: auto;
+  }
+  .left-login-img {
+    width: 50vw;
+  }
+  .card-login {
+    width: 90%;
+  }
+}
+
+.ui.sidebar {
+  background: #01abe0;
+  background: #1c2654;
+  background: #001e2a;
+}
+
+body.pushable .pusher {
+  background: #f1fff9;
+  padding-left: 2em;
+  padding-top: 2em;
+}

@@ -6,11 +6,12 @@ const { DataTypes } = require("sequelize");
 
 // Auth
 const Clients = require("../services/Authentication/models/client.js");
-const Sessions = require("../services/Authentication/models/sessions.js");
+const AppSessions = require("../services/Authentication/models/appSessions.js");
+const Users = require("../services/Authentication/models")
 
 const models = {
   Clients,
-  Sessions,
+  AppSessions,
 };
 
 async function attempSynchronization(req, res) {

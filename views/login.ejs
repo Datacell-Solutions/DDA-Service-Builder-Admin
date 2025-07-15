@@ -1,0 +1,76 @@
+<main class="main-login">
+  <div class="right-login">
+    <div class="card-login">
+      <h1>Login</h1>
+      <div class="textfield">
+        <label for="username">User</label>
+        <input type="text" name="username" id="username" placeholder="User" />
+      </div>
+
+      <div class="textfield">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          name="password"
+          id="password"
+          placeholder="Password"
+        />
+      </div>
+
+      <div class="ui grid textfield">
+        <div class="sixteen wide column">
+          <div class="ui divider"></div>
+          <div class="ui text red" id="errorMsg"></div>
+        </div>
+      </div>
+
+      <button class="btn-login" onclick="startLogin();">Login</button>
+
+      <script>
+        function startLogin() {
+          var errorDiv = document.getElementById("errorMsg");
+          errorDiv.textContent = "";
+
+          const myHeaders = new Headers();
+          myHeaders.append("Content-Type", "application/json");
+
+          const raw = JSON.stringify({
+            username: document.getElementById("username").value,
+            password: document.getElementById("password").value,
+          });
+
+          const requestOptions = {
+            method: "POST",
+            headers: myHeaders,
+            body: raw,
+            redirect: "follow",
+          };
+
+          fetch("/Auth/admin/login", requestOptions)
+            .then((response) => response.json())
+            .then((result) => {
+              if (!!result.Error && result.Error !== "") {
+                errorDiv.textContent = result.Error;
+              } else {
+                var expires = "";
+                var date = new Date();
+                date.setTime(date.getTime() + 1 * 24 * 60 * 60 * 1000);
+                expires = "; expires=" + date.toUTCString();
+                document.cookie =
+                  "userAuthToken" +
+                  "=" +
+                  (result.Result || "") +
+                  expires +
+                  "; path=/";
+                window.location.href =
+                  window.location.origin + "/dashboard/endpoints";
+              }
+            })
+            .catch((error) => {
+              errorDiv.textContent = error;
+            });
+        }
+      </script>
+    </div>
+  </div>
+</main>

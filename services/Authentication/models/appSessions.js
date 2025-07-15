@@ -2,7 +2,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../../../config/database");
 
-const ClientSessions = sequelize.define(
+const AppSessions = sequelize.define(
   "AppSessions",
   {
     id: {
@@ -33,4 +33,4 @@ const ClientSessions = sequelize.define(
     timestamps: false, // Disable timestamps
   }
 );
-module.exports = ClientSessions;
+module.exports = AppSessions;

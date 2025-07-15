@@ -37,7 +37,6 @@ const Clients = sequelize.define(
     isActive: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: 1,
     },
     createDate: {
       type: DataTypes.DATE,

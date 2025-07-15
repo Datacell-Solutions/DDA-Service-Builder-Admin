@@ -1,7 +1,7 @@
 // controllers/pageController.js
 const { AppError } = require("../../../utils/errorHandler.js");
 const Clients = require("../models/client.js");
-const Sessions = require("../models/sessions.js");
+const AppSessions = require("../models/appSessions.js");
 const { sequelize } = require("../../../config/database.js");
 const {
   signJwt,
@@ -27,7 +27,7 @@ const getClientToken = async (req, res, next) => {
 
     const sessionId = generateGuid();
 
-    const Session = Sessions.create({
+    const Session = AppSessions.create({
       dguid: sessionId,
       clientId: currentClient.clientId,
       clientScope: currentClient.clientScope,

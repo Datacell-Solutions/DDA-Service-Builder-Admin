@@ -1,0 +1,68 @@
+<style>
+  .background {
+    height: 100%;
+    width: 100%;
+    background-color: #333;
+    filter: blur(0.2px);
+    position: fixed;
+    left: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url("/images/background.jpg");
+    background-size: cover;
+  }
+
+  body {
+    font-family: Arial, sans-serif;
+    background-size: cover;
+    background-position: center center;
+    margin: 0;
+    padding: 0;
+  }
+
+  .container {
+    background: rgba(0, 0, 0, 0.52);
+    padding: 20px 5vw;
+    height: 100%;
+    width: 100%;
+    filter: blur(0.2px);
+    position: fixed;
+    left: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+  }
+
+  .text-left {
+    text-align: left;
+    color: #f0f0f0;
+  }
+</style>
+
+<div class="background" id="background">
+  <div class="container">
+    <div class="text-left">
+      <h1>Welcome !</h1>
+      <p>Login to access the adminsitration panel.</p>
+      <a class="ui white button" href="/login">Login</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function () {
+    fetch(
+      "https://api.giphy.com/v1/gifs/random?api_key=cj5nQtafaiHJ2E0hL1CMQcYkCeAXzvSI&tag=pixelated&rating=g"
+    )
+      .then((response) => response.json())
+      .then((response) => {
+        console.log(response.data.images.downsized_large.url);
+        //document.getElementById('background').style.backgroundImage = 'url(' + response.data.images.downsized_large.url + ')';
+      });
+  });
+</script>

@@ -1,0 +1,106 @@
+<h1><%= APIFlow.Config.name %></h1>
+<p>Edit the API Below</p>
+<div class="container-fluid">
+  <div class="diagram-quickbar">
+    <div class="quickbar-items-group">
+      <a
+        href="javascript:void(0)"
+        class="quickbar-items-link"
+        onclick="event.preventDefault();saveDiagram();"
+      >
+        <img src="/gojs/icons/save.png" alt="Save" />
+      </a>
+    </div>
+    <div class="quickbar-items-group">
+      <a
+        href="javascript:void(0)"
+        class="quickbar-items-link"
+        onclick="myDiagram.commandHandler.undo()"
+      >
+        <img src="/gojs/icons/undo.png" alt="Undo" />
+      </a>
+      <a
+        href="javascript:void(0)"
+        class="quickbar-items-link"
+        onclick="myDiagram.commandHandler.redo()"
+      >
+        <img src="/gojs/icons/redo.png" alt="Redo" />
+      </a>
+    </div>
+    <div class="quickbar-items-group">
+      <a
+        href="javascript:void(0)"
+        class="quickbar-items-link"
+        onclick="myDiagram.commandHandler.alignLeft()"
+      >
+        <img src="/gojs/icons/align-left.png" alt="Left Align" />
+      </a>
+      <a
+        href="javascript:void(0)"
+        class="quickbar-items-link"
+        onclick="myDiagram.commandHandler.alignCenterX()"
+      >
+        <img src="/gojs/icons/align-center.png" alt="Center Align" />
+      </a>
+      <a
+        href="javascript:void(0)"
+        class="quickbar-items-link"
+        onclick="myDiagram.commandHandler.alignRight()"
+      >
+        <img src="/gojs/icons/align-right.png" alt="Right Align" />
+      </a>
+    </div>
+    <div class="quickbar-items-group">
+      <a
+        href="javascript:void(0)"
+        class="quickbar-items-link"
+        onclick="myDiagram.commandHandler.alignTop()"
+      >
+        <img src="/gojs/icons/align-leftv.png" alt="Left Align" />
+      </a>
+      <a
+        href="javascript:void(0)"
+        class="quickbar-items-link"
+        onclick="myDiagram.commandHandler.alignCenterY()"
+      >
+        <img src="/gojs/icons/align-centerv.png" alt="Center Align" />
+      </a>
+      <a
+        href="javascript:void(0)"
+        class="quickbar-items-link"
+        onclick="myDiagram.commandHandler.alignBottom()"
+      >
+        <img src="/gojs/icons/align-rightv.png" alt="Right Align" />
+      </a>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+  <div class="row" id="ProcessDiagramRender">
+    <div style="width: 100%; display: flex; justify-content: space-between">
+      <div
+        id="myPaletteDiv"
+        style="
+          width: 160px;
+          margin-right: 2px;
+          background-color: whitesmoke;
+          border: solid 1px black;
+        "
+      ></div>
+      <div
+        id="myDiagramDiv"
+        style="flex-grow: 1; height: 550px; border: solid 1px black"
+      ></div>
+    </div>
+  </div>
+  <hr />
+  <!--<button class="btn btn-primary mt-3" onclick="event.preventDefault();saveDiagram();">Save Diagram</button>-->
+</div>
+
+<script>
+  jQuery(document).ready(function () {
+    init(
+      '{"class": "GraphLinksModel", "nodeDataArray": [],"linkDataArray": []}',
+      "/gojs/icons/"
+    );
+  });
+</script>

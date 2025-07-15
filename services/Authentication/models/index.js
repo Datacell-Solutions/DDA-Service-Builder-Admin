@@ -1,8 +1,8 @@
 // models/index.js
 const Clients = require("./client");
-const DSessions = require("./sessions");
+const AppSessions = require("./appSessions");
 
 module.exports = {
   Clients,
-  DSessions,
+  AppSessions,
 };

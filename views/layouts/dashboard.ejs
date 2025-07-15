@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Edit API</title>
+
+    <link rel="stylesheet" type="text/css" href="/semantic/semantic.min.css" />
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+
+    <script src="/js/jquery-3.4.1.min.js" type="text/javascript"></script>
+
+    <script src="/semantic/semantic.min.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body class="pushable dimmable">
+    <div class="ui left sidebar visible primary">
+      <div class="ui grid">
+        <div class="sixteen wide column">
+          <img class="ui image fluid" src="/images/sidebar-head.webp" alt="" />
+          <div class="ui vertical fluid tabular menu black inverted">
+            <a class="item"> Projects </a>
+            <a class="item"> Endpoints </a>
+            <a class="item"> Linked Systems </a>
+            <a class="item"> Links </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pusher">
+      <div class="ui grid">
+        <div class="two column row">
+          <div class="left floated column">
+            <a class="ui link" href="" onclick="event.preventDefault();logOut()"> Logout </a>
+          </div>
+        </div>
+      </div>
+      <h1><%- title %></h1>
+      <%- body %>
+      <script>
+        function logOut() {
+          document.cookie =
+            "userAuthToken" +
+            "=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+          window.location.href = window.location.origin + "/login";
+        }
+      </script>
+    </div>
+  </body>
+</html>
