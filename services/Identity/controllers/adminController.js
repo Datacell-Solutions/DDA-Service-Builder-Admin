@@ -2,7 +2,7 @@ const { AppError } = require("../../../utils/errorHandler.js");
 const { sequelize } = require("../../../config/database.js");
 const bcrypt = require("bcryptjs");
 
-const sendResponse = require("../../../utils/responseHandler.js");
+const {sendResponse} = require("../../../utils/responseHandler.js");
 
 const {
   signJwt,
@@ -24,7 +24,7 @@ const getAdminLogin = async (req, res, next) => {
 
   try {
     const attemptedUser = await Users.findOne({
-      where: { userName: username, isActive: true, role: "admin" },
+      where: { userName: username, isActive: true, type: "admin" },
     });
 
     if (!!attemptedUser) {
@@ -38,7 +38,7 @@ const getAdminLogin = async (req, res, next) => {
         const newSession = await AppSessions.create({
           guid: newSessionId,
           userName: attemptedUser.userName,
-          userRole: attemptedUser.role,
+          userType: attemptedUser.type,
           channel: clientHeader,
           clientId: clientHeader,
           clientScope: "master",
@@ -47,7 +47,7 @@ const getAdminLogin = async (req, res, next) => {
         const payload = {
           session: newSession,
           userName: attemptedUser.userName,
-          userRole: attemptedUser.role,
+          userType: attemptedUser.type,
         };
 
         const jwt = signJwt(payload);

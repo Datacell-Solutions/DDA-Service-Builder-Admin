@@ -3,48 +3,36 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../../../config/database");
 const bcrypt = require("bcryptjs");
 
-const Users = sequelize.define(
-  "Users",
+const Entities = sequelize.define(
+  "Entities",
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    userName: {
-      type: DataTypes.STRING(255),
+    guid: {
+      type: DataTypes.STRING(100),
       unique: true,
       allowNull: false,
     },
-    email: {
+    entityKey: {
       type: DataTypes.STRING(255),
       allowNull: false,
+      unique: true,
     },
-    password: {
+    fullName: {
       type: DataTypes.STRING(500),
       allowNull: true,
       set(value) {
         // Hash the clientSecret before saving
-        const hashedSecret = bcrypt.hashSync(value, 10);
-        this.setDataValue("password", hashedSecret);
+        const hashedSecret = bcrypt.hashSync(value, 10); // 10 rounds of salt
+        this.setDataValue("clientSecret", hashedSecret);
       },
     },
-    fullName: {
-      type: DataTypes.STRING(255),
+    logo: {
+      type: DataTypes.STRING(512),
       allowNull: false,
-    },
-    entity: {
-      type: DataTypes.STRING(255),
-      allowNull: true,
-    },
-    type: {
-      type: DataTypes.ENUM("admin", "dda", "entity"),
-      allowNull: true,
-      defaultValue: "entity",
-    },
-    role: {
-      type: DataTypes.ENUM("business", "technical"),
-      allowNull: true,
     },
     isActive: {
       type: DataTypes.BOOLEAN,
@@ -60,9 +48,9 @@ const Users = sequelize.define(
     },
   },
   {
-    tableName: "Users",
+    tableName: "Entities",
     timestamps: true, // Disable timestamps
   }
 );
 
-module.exports = Users;
+module.exports = Entities;

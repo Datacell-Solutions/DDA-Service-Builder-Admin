@@ -49,7 +49,7 @@ const Clients = sequelize.define(
   },
   {
     tableName: "AppClients",
-    timestamps: false, // Disable timestamps
+    timestamps: true, // Disable timestamps
   }
 );
 

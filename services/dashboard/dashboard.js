@@ -9,7 +9,7 @@ const getUsers = async (req, res, next) => {
         "id",
         "userName",
         "fullName",
-        "role",
+        "type",
         [
           Sequelize.literal(`(
         SELECT "createdAt"

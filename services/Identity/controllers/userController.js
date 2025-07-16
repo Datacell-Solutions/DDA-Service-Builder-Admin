@@ -1,12 +1,18 @@
 const { Sequelize, Op } = require("sequelize");
 const { AppError } = require("../../../utils/errorHandler.js");
+const bcrypt = require("bcryptjs");
+
 const Clients = require("../models/client.js");
 const AppSessions = require("../models/appSessions.js");
 const sequelize = require("../../../config/database.js");
 
 const { sendError } = require("../../../utils/errorHandler.js");
+const { sendResponse } = require("../../../utils/responseHandler.js");
 
 const Users = require("../models/users.js");
+const Entities = require("../models/entities.js");
+
+const { clientUserTypes } = require("../../../utils/globals.js");
 
 const {
   signJwt,
@@ -18,7 +24,7 @@ const {
 const generateGuid = require("../../../utils/guid.js");
 
 const createUser = async (req, res, next) => {
-  const { userName, email, password, fullName, entity, role, isActive } =
+  const { userName, email, password, fullName, entity, type, isActive } =
     req.body;
 
   // Basic validation
@@ -50,7 +56,7 @@ const createUser = async (req, res, next) => {
       password, // Password will be hashed automatically due to the setter in the model
       fullName: fullName || "User",
       entity: entity || null, // Default to null if no entity is provided
-      role: role || "entity", // Default to 'entity' role
+      type: type || "entity", // Default to 'entity' type
       isActive,
       createdBy: req.sessionUser.userName, // Default to null if no createdBy is provided
     });
@@ -70,6 +76,78 @@ const createUser = async (req, res, next) => {
   }
 };
 
+const createUserSession = async (req, res, next) => {
+  var { username, password } = req.body;
+  var responseBody = null;
+
+  try {
+    const attemptedUser = await Users.findOne({
+      where: {
+        userName: username,
+        isActive: true,
+        type: {
+          [Op.or]: clientUserTypes,
+        },
+      },
+    });
+
+    if (!!attemptedUser) {
+      const passwordComparison = bcrypt.compareSync(
+        password,
+        attemptedUser.password
+      );
+
+      if (!!passwordComparison) {
+        const newSessionId = generateGuid();
+        const newSession = await AppSessions.create({
+          guid: newSessionId,
+          userName: attemptedUser.userName,
+          userType: attemptedUser.type,
+          channel: req.client.clientId,
+          clientId: req.client.clientId,
+          clientScope: req.client.clientScope,
+        });
+
+        var entity = null;
+
+        if (attemptedUser.type == "entity") {
+          const userEntity = await Entities.findOne({
+            where: {
+              entityKey: attemptedUser.entity || "",
+            },
+          });
+
+          entity = userEntity || null;
+        }
+
+        const payload = {
+          session: newSession,
+          user: attemptedUser.userName,
+          userType: attemptedUser.type,
+        };
+
+        const jwt = signJwt(payload);
+
+        const encryptedToken = encryptText(jwt);
+
+        const { password, ...userWithoutPassword } = attemptedUser;
+
+        return sendResponse(req, res, 200, {
+          token: encryptedToken,
+          user: userWithoutPassword,
+          entity,
+        });
+      }
+    }
+
+    return sendError(req, res, 400, "Invalid credentials");
+  } catch (err) {
+    console.log(err);
+    return sendError(req, res, 500, "An Error Occured");
+  }
+};
+
 module.exports = {
   createUser,
+  createUserSession,
 };

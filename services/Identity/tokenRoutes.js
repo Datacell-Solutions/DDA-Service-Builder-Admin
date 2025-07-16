@@ -2,13 +2,18 @@
 const express = require("express");
 const router = express.Router();
 
+const { checkClientOnly } = require("../../middlewares/clientCheck");
+
 // Import all controllers
 const { getClientToken } = require("./controllers/clientsController");
 const { getAdminLogin } = require("./controllers/adminController");
+const { createUserSession } = require("./controllers/userController");
 
 // Routes
 router.post("/client/Login", getClientToken);
 router.post("/admin/login", getAdminLogin);
+
+router.post("/client/user/login", checkClientOnly, createUserSession);
 
 router.get("/admin/authorized", function async(req, res) {
   const authToken = req.query.token;

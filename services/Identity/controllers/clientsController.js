@@ -2,11 +2,15 @@ const { Sequelize, Op } = require("sequelize");
 const { AppError } = require("../../../utils/errorHandler.js");
 const Clients = require("../models/client.js");
 const AppSessions = require("../models/appSessions.js");
+const Entities = require("../models/entities.js");
 const sequelize = require("../../../config/database.js");
 
 const { sendError } = require("../../../utils/errorHandler.js");
+const { sendResponse } = require("../../../utils/responseHandler.js");
 
 const Users = require("../models/users.js");
+
+const { clientUserTypes } = require("../../../utils/globals.js");
 
 const {
   signJwt,
@@ -103,7 +107,47 @@ const createClient = async (req, res, next) => {
   }
 };
 
+const exchangeToken = async (req, res, next) => {
+  try {
+    const attemptedUser = await Users.findOne({
+      where: {
+        userName: req.session.userName,
+        isActive: true,
+        type: {
+          [Op.or]: clientUserTypes,
+        },
+      },
+      raw: true,
+    });
+
+    if (!!attemptedUser) {
+      var entity = null;
+
+      if (attemptedUser.type == "entity") {
+        const userEntity = await Entities.findOne({
+          where: {
+            entityKey: attemptedUser.entity || "",
+          },
+        });
+
+        entity = userEntity || null;
+      }
+
+      const { password, ...userWithoutPassword } = attemptedUser;
+      return sendResponse(req, res, 200, {
+        user: userWithoutPassword,
+        entity,
+      });
+    }
+  } catch (err) {
+    console.log({ err });
+  }
+
+  return sendError(req, res, 500, "An Error Occured");
+};
+
 module.exports = {
   getClientToken,
   createClient,
+  exchangeToken,
 };

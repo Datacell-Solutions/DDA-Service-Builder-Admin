@@ -8,11 +8,13 @@ const generateGuid = require("./guid.js");
 const Clients = require("../services/Identity/models/client.js");
 const AppSessions = require("../services/Identity/models/appSessions.js");
 const Users = require("../services/Identity/models/users.js");
+const Entities = require("../services/Identity/models/entities.js");
 
 const models = {
   Clients,
   AppSessions,
   Users,
+  Entities,
 };
 
 async function attempSynchronization(req, res) {
@@ -26,7 +28,7 @@ async function attempSynchronization(req, res) {
         fullName: "System Admin",
         email: "admin@system.com",
         entity: "",
-        role: "admin",
+        type: "admin",
         isActive: true,
         createdBy: process.env.DEFAULT_ADMIN_USERNAME,
       });
@@ -36,6 +38,36 @@ async function attempSynchronization(req, res) {
         clientId: process.env.DEFAULT_CLIENT_ID,
         clientSecret: process.env.DEFAULT_CLIENT_SECRET,
         clientScope: "master",
+        isActive: true,
+        createdBy: process.env.DEFAULT_ADMIN_USERNAME,
+      });
+
+      await Clients.create({
+        guid: generateGuid(),
+        clientId: process.env.DEFAULT_API_CLIENT_ID,
+        clientSecret: process.env.DEFAULT_API_CLIENT_SECRET,
+        clientScope: "api",
+        isActive: true,
+        createdBy: process.env.DEFAULT_ADMIN_USERNAME,
+      });
+
+      await Entities.create({
+        guid: generateGuid(),
+        entityKey: process.env.DEFAULT_ENTITY_KEY,
+        fullName: "",
+        logo: "/files/entitydefault.jpg",
+        isActive: true,
+        createdBy: process.env.DEFAULT_ADMIN_USERNAME,
+      });
+
+      await Users.create({
+        userName: process.env.DEFAULT_ENTITY_USERNAME,
+        password: process.env.DEFAULT_ENTITY_USER_PASSWORD,
+        fullName: "Entity User",
+        email: "entityuser@system.com",
+        entity: process.env.DEFAULT_ENTITY_KEY,
+        type: "entity",
+        role: "business",
         isActive: true,
         createdBy: process.env.DEFAULT_ADMIN_USERNAME,
       });
