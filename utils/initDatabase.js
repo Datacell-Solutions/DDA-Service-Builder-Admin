@@ -2,21 +2,45 @@
 const fs = require("fs");
 const path = require("path");
 const sequelize = require("../config/database.js");
-const { DataTypes } = require("sequelize");
+const generateGuid = require("./guid.js");
 
 // Auth
-const Clients = require("../services/Authentication/models/client.js");
-const AppSessions = require("../services/Authentication/models/appSessions.js");
-const Users = require("../services/Authentication/models")
+const Clients = require("../services/Identity/models/client.js");
+const AppSessions = require("../services/Identity/models/appSessions.js");
+const Users = require("../services/Identity/models/users.js");
 
 const models = {
   Clients,
   AppSessions,
+  Users,
 };
 
 async function attempSynchronization(req, res) {
   try {
-    await sequelize.sync({ alter: true, force: true }); // use { force: true } to drop+recreate
+    await sequelize.sync({ alter: true, force: true }).then(async () => {
+      console.log("Database synced. Inserting default data...");
+
+      await Users.create({
+        userName: process.env.DEFAULT_ADMIN_USERNAME,
+        password: process.env.DEFAULT_ADMIN_PASSWORD,
+        fullName: "System Admin",
+        email: "admin@system.com",
+        entity: "",
+        role: "admin",
+        isActive: true,
+        createdBy: process.env.DEFAULT_ADMIN_USERNAME,
+      });
+
+      await Clients.create({
+        guid: generateGuid(),
+        clientId: process.env.DEFAULT_CLIENT_ID,
+        clientSecret: process.env.DEFAULT_CLIENT_SECRET,
+        clientScope: "master",
+        isActive: true,
+        createdBy: process.env.DEFAULT_ADMIN_USERNAME,
+      });
+    });
+
     res.send("✅ All models synced to database schema.");
   } catch (err) {
     const logDir = path.join(__dirname, "../logs");

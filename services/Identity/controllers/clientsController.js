@@ -1,8 +1,13 @@
-// controllers/pageController.js
+const { Sequelize, Op } = require("sequelize");
 const { AppError } = require("../../../utils/errorHandler.js");
 const Clients = require("../models/client.js");
 const AppSessions = require("../models/appSessions.js");
-const { sequelize } = require("../../../config/database.js");
+const sequelize = require("../../../config/database.js");
+
+const { sendError } = require("../../../utils/errorHandler.js");
+
+const Users = require("../models/users.js");
+
 const {
   signJwt,
   decryptJwt,
@@ -28,7 +33,7 @@ const getClientToken = async (req, res, next) => {
     const sessionId = generateGuid();
 
     const Session = AppSessions.create({
-      dguid: sessionId,
+      guid: sessionId,
       clientId: currentClient.clientId,
       clientScope: currentClient.clientScope,
       createDate: new Date(),
@@ -55,6 +60,50 @@ const getClientToken = async (req, res, next) => {
   }
 };
 
+const createClient = async (req, res, next) => {
+  const { clientId, clientSecret, clientScope } = req.body;
+
+  // Basic validation
+  if (!clientId || !clientSecret || !clientScope) {
+    return sendError(req, res, 400, "Missing required fields");
+  }
+
+  try {
+    // Check if the user already exists by email or userName
+    const existingClient = await Clients.findOne({
+      where: { clientId: clientId },
+    });
+
+    if (existingClient) {
+      return sendError(req, res, 400, "Client already exists");
+    }
+
+    // Create new user
+    const newClient = await Clients.create({
+      guid: generateGuid(),
+      clientId,
+      clientSecret,
+      clientScope,
+      isActive: true,
+      createdBy: req.sessionUser.userName,
+    });
+
+    // Respond with the created user (excluding sensitive data like password)
+    const { clientSecret: _, ...clientWithoutPassword } = newClient.toJSON();
+
+    res.send({
+      message: "User created successfully",
+      user: clientWithoutPassword,
+    });
+
+    return false;
+  } catch (error) {
+    console.error(error);
+    res.send({ message: "Error creating user", error: error.message });
+  }
+};
+
 module.exports = {
   getClientToken,
+  createClient,
 };

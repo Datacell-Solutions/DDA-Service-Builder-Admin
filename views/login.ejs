@@ -33,6 +33,7 @@
 
           const myHeaders = new Headers();
           myHeaders.append("Content-Type", "application/json");
+          myHeaders.append("ClientId", "admin_portal");
 
           const raw = JSON.stringify({
             username: document.getElementById("username").value,
@@ -52,18 +53,10 @@
               if (!!result.Error && result.Error !== "") {
                 errorDiv.textContent = result.Error;
               } else {
-                var expires = "";
-                var date = new Date();
-                date.setTime(date.getTime() + 1 * 24 * 60 * 60 * 1000);
-                expires = "; expires=" + date.toUTCString();
-                document.cookie =
-                  "userAuthToken" +
-                  "=" +
-                  (result.Result || "") +
-                  expires +
-                  "; path=/";
                 window.location.href =
-                  window.location.origin + "/dashboard/endpoints";
+                  window.location.origin +
+                  "/auth/admin/authorized?token=" +
+                  result.Data.token;
               }
             })
             .catch((error) => {

@@ -10,27 +10,36 @@ const AppSessions = sequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    dguid: {
+    guid: {
       type: DataTypes.STRING(100),
       unique: true,
       allowNull: false,
     },
     clientId: {
       type: DataTypes.STRING(255),
-      allowNull: false,
+      allowNull: true,
     },
     clientScope: {
       type: DataTypes.STRING(2056),
-      allowNull: false,
+      allowNull: true,
     },
-    createDate: {
-      type: DataTypes.DATE,
+    userName: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
+    userRole: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
+    issuedTo: {
+      type: DataTypes.STRING(255),
       allowNull: true,
     },
   },
   {
     tableName: "AppSessions",
-    timestamps: false, // Disable timestamps
+    timestamps: true, // Disable timestamps
   }
 );
+
 module.exports = AppSessions;

@@ -3,66 +3,54 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../../../config/database");
 const bcrypt = require("bcryptjs");
 
-const Users = sequelize.define(
-  "Users",
+const Clients = sequelize.define(
+  "AppClients",
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    userName: {
-      type: DataTypes.STRING(255),
+    guid: {
+      type: DataTypes.STRING(100),
       unique: true,
       allowNull: false,
     },
-    email: {
+    clientId: {
       type: DataTypes.STRING(255),
       allowNull: false,
+      unique: true,
     },
-    password: {
+    clientSecret: {
       type: DataTypes.STRING(500),
       allowNull: true,
       set(value) {
         // Hash the clientSecret before saving
-        const hashedSecret = bcrypt.hashSync(value, 10);
-        this.setDataValue("password", hashedSecret);
+        const hashedSecret = bcrypt.hashSync(value, 10); // 10 rounds of salt
+        this.setDataValue("clientSecret", hashedSecret);
       },
     },
-    entity: {
-      type: DataTypes.STRING(255),
-      allowNull: true,
-    },
-    role: {
-      type: DataTypes.ENUM("admin", "dda", "entity"),
-      allowNull: true,
-      defaultValue: "entity",
+    clientScope: {
+      type: DataTypes.STRING(2056),
+      allowNull: false,
     },
     isActive: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
     },
-    createdAt: {
-      type: DataTypes.TIME,
-      allowNull: true,
-      defaultValue: Sequelize.NOW,
-    },
     createdBy: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
       allowNull: true,
     },
     updatedBy: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: true,
     },
   },
   {
-    tableName: "Users",
+    tableName: "AppClients",
     timestamps: false, // Disable timestamps
   }
 );
-module.exports = Users;
+
+module.exports = Clients;

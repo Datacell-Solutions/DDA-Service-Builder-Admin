@@ -1,0 +1,35 @@
+<div class="ui grid">
+  <div class="one column row">
+    <div class="column">
+      <hr />
+      <div class="ui card w-100 pad-x pad-y">
+        <div class="content">
+          <table class="ui very basic collapsing table w-100">
+            <thead class="full-width">
+              <tr>
+                <th></th>
+                <th>Username</th>
+                <th>Full Name</th>
+                <th>Role</th>
+                <th>Last Login</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% usersList.forEach(user => { %>
+              <tr>
+                <td>
+                  <div class="dp-bubble"><%= user.fullName.charAt(0) %></div>
+                </td>
+                <td><%= user.userName %></td>
+                <td><%= user.fullName %></td>
+                <td><%= user.role %></td>
+                <td><%= user.lastSessionAt %></td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
