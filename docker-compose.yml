@@ -24,6 +24,7 @@ services:
       - "6663:3333"
     volumes:
       - .:/app
+      - /app/node_modules
     environment:
       - NODE_ENV=development
     command: npm run start
