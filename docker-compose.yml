@@ -18,16 +18,15 @@ services:
     restart: unless-stopped
 
 
-    dda_dsc_admin:
-      build: .
-      ports:
-        - "6663:3333"
-      volumes:
-        - .:/app
-      environment:
-        - NODE_ENV=development
-      command: npm run start
+  dda_dsc_admin:
+    build: .
+    ports:
+      - "6663:3333"
+    volumes:
+      - .:/app
+    environment:
+      - NODE_ENV=development
+    command: npm run start
 
 volumes:
-  pg_datadb:
   pg_admindb:
