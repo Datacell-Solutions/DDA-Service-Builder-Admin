@@ -9,12 +9,14 @@ const Clients = require("../services/Identity/models/client.js");
 const AppSessions = require("../services/Identity/models/appSessions.js");
 const Users = require("../services/Identity/models/users.js");
 const Entities = require("../services/Identity/models/entities.js");
+const AssignedEntities = require("../services/Identity/models/assignedEntities.js");
 
 const models = {
   Clients,
   AppSessions,
   Users,
   Entities,
+  AssignedEntities,
 };
 
 async function attempSynchronization(req, res) {
@@ -70,6 +72,50 @@ async function attempSynchronization(req, res) {
         role: "business",
         isActive: true,
         createdBy: process.env.DEFAULT_ADMIN_USERNAME,
+      });
+
+      await Users.create({
+        userName: `${process.env.DEFAULT_ENTITY_USERNAME}technical`,
+        password: process.env.DEFAULT_ENTITY_USER_PASSWORD,
+        fullName: "Entity User",
+        email: "entityuser@system.com",
+        entity: process.env.DEFAULT_ENTITY_KEY,
+        type: "entity",
+        role: "technical",
+        isActive: true,
+        createdBy: process.env.DEFAULT_ADMIN_USERNAME,
+      });
+
+      await Users.create({
+        userName: process.env.DEFAULT_DDA_USERNAME,
+        password: process.env.DEFAULT_DDA_USER_PASSWORD,
+        fullName: "DDA User",
+        email: "entityuser@system.com",
+        type: "dda",
+        role: "business",
+        isActive: true,
+        createdBy: process.env.DEFAULT_ADMIN_USERNAME,
+      });
+
+      await Users.create({
+        userName: `${process.env.DEFAULT_DDA_USERNAME}technical`,
+        password: process.env.DEFAULT_DDA_USER_PASSWORD,
+        fullName: "DDA User",
+        email: "entityuser@system.com",
+        type: "dda",
+        role: "technical",
+        isActive: true,
+        createdBy: process.env.DEFAULT_ADMIN_USERNAME,
+      });
+
+      await AssignedEntities.create({
+        userName: process.env.DEFAULT_DDA_USERNAME,
+        entityKey: process.env.DEFAULT_ENTITY_KEY,
+      });
+
+      await AssignedEntities.create({
+        userName: `${process.env.DEFAULT_DDA_USERNAME}technical`,
+        entityKey: process.env.DEFAULT_ENTITY_KEY,
       });
     });
 

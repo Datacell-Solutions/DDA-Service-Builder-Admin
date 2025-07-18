@@ -3,7 +3,7 @@ const { AppError } = require("../../../utils/errorHandler.js");
 const bcrypt = require("bcryptjs");
 
 const Clients = require("../models/client.js");
-const AppSessions = require("../models/appSessions.js");
+
 const sequelize = require("../../../config/database.js");
 
 const { sendError } = require("../../../utils/errorHandler.js");
@@ -11,6 +11,8 @@ const { sendResponse } = require("../../../utils/responseHandler.js");
 
 const Users = require("../models/users.js");
 const Entities = require("../models/entities.js");
+const AppSessions = require("../models/appSessions.js");
+const AssignedEntities = require("../models/assignedEntities.js");
 
 const { clientUserTypes } = require("../../../utils/globals.js");
 
@@ -22,6 +24,7 @@ const {
 } = require("../../../utils/security.js");
 
 const generateGuid = require("../../../utils/guid.js");
+const { raw } = require("express");
 
 const createUser = async (req, res, next) => {
   const { userName, email, password, fullName, entity, type, isActive } =
@@ -89,6 +92,7 @@ const createUserSession = async (req, res, next) => {
           [Op.or]: clientUserTypes,
         },
       },
+      raw: true,
     });
 
     if (!!attemptedUser) {
@@ -118,6 +122,30 @@ const createUserSession = async (req, res, next) => {
           });
 
           entity = userEntity || null;
+        } else if (attemptedUser.type == "dda") {
+          const assignedKeys = await AssignedEntities.findAll({
+            attributes: ["entityKey"],
+            where: {
+              userName: attemptedUser.userName,
+            },
+            raw: true,
+          });
+
+          if (!!assignedKeys) {
+            const entityKeys = assignedKeys.map((row) => row.entityKey);
+            const matchingEntities = await Entities.findAll({
+              where: {
+                entityKey: {
+                  [Op.in]: entityKeys,
+                },
+              },
+              raw: true,
+            });
+
+            if (matchingEntities) {
+              entity = matchingEntities;
+            }
+          }
         }
 
         const payload = {

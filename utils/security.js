@@ -6,7 +6,7 @@ dotenv.config();
 
 const jwtSecret = process.env.JWT_SECRET;
 
-const signJwt = (payload) => jwt.sign(payload, jwtSecret, { expiresIn: "3h" });
+const signJwt = (payload) => jwt.sign(payload, jwtSecret, { expiresIn: "24h" });
 
 const decryptJwt = (token) => {
   try {

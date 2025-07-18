@@ -1,14 +1,15 @@
 const { Sequelize, Op } = require("sequelize");
 const { AppError } = require("../../../utils/errorHandler.js");
 const Clients = require("../models/client.js");
-const AppSessions = require("../models/appSessions.js");
-const Entities = require("../models/entities.js");
 const sequelize = require("../../../config/database.js");
 
 const { sendError } = require("../../../utils/errorHandler.js");
 const { sendResponse } = require("../../../utils/responseHandler.js");
 
 const Users = require("../models/users.js");
+const AppSessions = require("../models/appSessions.js");
+const Entities = require("../models/entities.js");
+const AssignedEntities = require("../models/assignedEntities.js");
 
 const { clientUserTypes } = require("../../../utils/globals.js");
 
@@ -131,6 +132,30 @@ const exchangeToken = async (req, res, next) => {
         });
 
         entity = userEntity || null;
+      } else if (attemptedUser.type == "dda") {
+        const assignedKeys = await AssignedEntities.findAll({
+          attributes: ["entityKey"],
+          where: {
+            userName: attemptedUser.userName,
+          },
+          raw: true,
+        });
+
+        if (!!assignedKeys) {
+          const entityKeys = assignedKeys.map((row) => row.entityKey);
+          const matchingEntities = await Entities.findAll({
+            where: {
+              entityKey: {
+                [Op.in]: entityKeys,
+              },
+            },
+            raw: true,
+          });
+
+          if (matchingEntities) {
+            entity = matchingEntities;
+          }
+        }
       }
 
       const { password, ...userWithoutPassword } = attemptedUser;
